@@ -206,15 +206,14 @@ class AllureImpl(object):
 
         :arg body: str or unicode with contents. str is written as-is in byte stream, unicode is written as utf-8 (what do you expect else?)
         """
+        if isinstance(body, text_type):
+            body = body.encode('utf-8')
         filename = "%s-attachment.%s" % (uuid.uuid3(uuid.NAMESPACE_DNS, body), attach_type.extension)
         reportpath = os.path.join(self.logdir, filename)
         if os.path.exists(reportpath):
             return os.path.basename(filename)
         with open(reportpath, 'wb') as f:
-            if isinstance(body, text_type):
-                f.write(body.encode('utf-8'))
-            else:
-                f.write(body)
+            f.write(body)
             return os.path.basename(f.name)
 
     @contextmanager
